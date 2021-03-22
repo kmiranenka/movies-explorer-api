@@ -1,5 +1,7 @@
 # react-mesto-api-full
 Репозиторий для приложения проекта `Mesto`, включающий фронтенд и бэкенд части приложения со следующими возможностями: авторизации и регистрации пользователей, операции с карточками и пользователями. Бэкенд расположите в директории `backend/`, а фронтенд - в `frontend/`. 
 
- Project link: https://mironenko.students.nomoredomains.icu/ 
+ Project links: 
+ * https://api.mironenko.kate.students.nomoredomains.icu
+ * https://mironenko.kate.students.nomoredomains.icu
 
