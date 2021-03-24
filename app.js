@@ -1,5 +1,7 @@
 require('dotenv').config();
 const express = require('express');
+
+const { NODE_ENV, MONGO_CONNECTION } = process.env;
 const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
@@ -8,15 +10,15 @@ const {
   errors, celebrate, Joi, isCelebrateError,
 } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const movieRouter = require('./routes/movie.js');
-const usersRouter = require('./routes/user.js');
+const routers = require('./routes/index');
 const {
   login, createUser,
 } = require('./controllers/user');
 const auth = require('./middlewares/auth');
 const NotFoundError = require('./errors/not-found-err');
+const ValidationError = require('./errors/validation-err');
 
-mongoose.connect('mongodb://localhost:27017/bitfilmsdb', {
+mongoose.connect(NODE_ENV === 'production' ? MONGO_CONNECTION : 'mongodb://localhost:27017/bitfilmsdb', {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
@@ -74,8 +76,7 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.use('/movies', auth, movieRouter);
-app.use('/users', auth, usersRouter);
+app.use(auth, routers);
 
 app.use(resourceNotFound);
 app.use(errorLogger);
@@ -89,7 +90,8 @@ app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
 
   if (isCelebrateError(err)) {
-    return res.status(400).send({ message: 'Переданы некорректные данные' });
+    const error = new ValidationError('Переданы некорректные данные');
+    return res.status(error.statusCode).send({ message: error.message });
   }
 
   res

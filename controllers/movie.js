@@ -14,13 +14,17 @@ module.exports.getMovies = (req, res, next) => {
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  console.log(req.params.movieId);
-  Movie.findOneAndDelete(req.params.movieId)
+  Movie.find({ movieId: req.params.movieId })
     .then((movie) => {
-      if (!movie) {
+      if (!movie.length) {
         throw new NotFoundError('Данные не найдены');
       }
-      res.send({ data: movie });
+      if (JSON.stringify(movie[0].owner) === JSON.stringify(req.user._id)) {
+        Movie.findOneAndDelete(req.params.movieId);
+        res.send({ data: movie });
+      } else {
+        throw new NotFoundError('Данные не найдены');
+      }
     })
     .catch(next);
 };
