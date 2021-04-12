@@ -91,6 +91,7 @@ app.use((err, req, res, next) => {
 
   if (isCelebrateError(err)) {
     const error = new ValidationError('Переданы некорректные данные');
+    console.log(err);
     return res.status(error.statusCode).send({ message: error.message });
   }
 
