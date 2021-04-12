@@ -20,8 +20,10 @@ module.exports.deleteMovie = (req, res, next) => {
         throw new NotFoundError('Данные не найдены');
       }
       if (JSON.stringify(movie[0].owner) === JSON.stringify(req.user._id)) {
-        Movie.findOneAndDelete(req.params.movieId);
-        res.send({ data: movie });
+        Movie.findOneAndDelete(req.params.movieId)
+          .then(() => {
+            res.send({ data: movie });
+          });
       } else {
         throw new NotFoundError('Данные не найдены');
       }
