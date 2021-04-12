@@ -18,13 +18,13 @@ router.post('/', celebrate({
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
     thumbnail: Joi.string().required().uri(),
-    movieId: Joi.string().required().hex().length(24),
+    movieId: Joi.string().required(),
   }),
 }), createMovie);
 
 router.delete('/:movieId', celebrate({
   params: Joi.object().keys({
-    movieId: Joi.string().required().hex().length(24),
+    movieId: Joi.string().required(),
   }),
 }), deleteMovie);
 module.exports = router;
